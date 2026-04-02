@@ -6,3 +6,7 @@ terraform apply
 
 
 terraform apply -auto-approve
+
+cd terraform
+terraform init   
+terraform apply
