@@ -33,10 +33,14 @@ kubectl exec -it $(kubectl get pods -n terraform-lab -l app=nginx -o name | head
 kubectl delete pod nginx-deployment-c845f45b5-fghpd -n terraform-lab
 
 
+kubectl rollout restart deployment/nginx-deployment -n terraform-lab
+
 
 kubectl get pods -n terraform-lab
 
 kubectl get ns terraform-lab      
+
+
 
 
 
@@ -45,3 +49,7 @@ eval $(minikube docker-env)
 
 # 2. Build using your specific filename
 docker build -t my-custom-nginx:v1 -f Dockerfile.nginx .
+
+
+
+minikube image ls --format table | grep my-custom-nginxs

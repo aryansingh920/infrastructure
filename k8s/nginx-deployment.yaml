@@ -16,7 +16,7 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: my-custom-nginx:v1
+        image: my-custom-nginx:v2
         ports:
         - containerPort: 80
         resources:
