@@ -1,0 +1,10 @@
+# Step 1: Use the same version from your K8s config
+FROM nginx:1.14.2
+
+# Step 2: Add a custom index.html so we know it's OUR image
+RUN echo "<h1>Hello from my Terraform-K8s Lab!</h1>" > /usr/share/nginx/html/index.html
+
+# Step 3: Ensure the port matches your containerPort
+EXPOSE 80
+
+# Step 4: Nginx starts automatically by default

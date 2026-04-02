@@ -17,6 +17,11 @@ terraform destroy
 kubectl port-forward deployment/nginx-deployment 8080:80 -n terraform-lab
 
 
+kubectl logs -l app=nginx -n terraform-lab -f
+
+
+
+
 # Get logs from the first pod it finds with the label app=nginx
 kubectl logs -l app=nginx -n terraform-lab
 
@@ -32,3 +37,11 @@ kubectl delete pod nginx-deployment-c845f45b5-fghpd -n terraform-lab
 kubectl get pods -n terraform-lab
 
 kubectl get ns terraform-lab      
+
+
+
+# 1. Point your terminal to Minikube's Docker engine
+eval $(minikube docker-env)
+
+# 2. Build using your specific filename
+docker build -t my-custom-nginx:v1 -f Dockerfile.nginx .

@@ -16,12 +16,9 @@ spec:
     spec:
       containers:
       - name: nginx
-        image: nginx:1.14.2
+        image: my-custom-nginx:v1
         ports:
-        # Fixed: The field name must be 'containerPort' (camelCase)
         - containerPort: 80
-        
-        # Fixed: Adding resources prevents the "Noisy Neighbor" problem
         resources:
           requests:
             memory: "64Mi"
