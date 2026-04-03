@@ -1,3 +1,5 @@
+minikube start
+
 terraform init
 
 terraform plan 
@@ -53,3 +55,11 @@ docker build -t my-custom-nginx:v1 -f Dockerfile.nginx .
 
 
 minikube image ls --format table | grep my-custom-nginxs
+eval $(minikube docker-env)
+
+# 2. Build using your specific filename
+docker build -t my-custom-nginx-1:v1 -f Dockerfile.nginx .
+
+
+
+kubectl get pods -n terraform-lab -l app=jenkins -w

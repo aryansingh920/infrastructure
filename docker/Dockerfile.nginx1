@@ -1,0 +1,6 @@
+FROM nginx:1.14.2
+
+# COPY [source_path_on_your_mac] [destination_path_in_container]
+COPY /code/index1.html /usr/share/nginx/html/index.html
+
+EXPOSE 80
