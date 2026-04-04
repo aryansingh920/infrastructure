@@ -1,21 +1,16 @@
 pipeline {
     agent any
     environment {
-        DOCKER_USER = "axone125" // Replace this!
+        DOCKER_USER = "axone125" 
     }
     stages {
-        stage('Checkout') {
-            steps {
-                checkout scm
-            }
-        }
+        // No manual Checkout stage needed here
+        
         stage('Build & Push App 1') {
             steps {
                 script {
-                    // Build using the specific Dockerfile
                     sh "docker build -t ${DOCKER_USER}/my-app:v${env.BUILD_NUMBER} -f docker/Dockerfile.nginx docker/"
                     
-                    // Log in and Push
                     withCredentials([usernamePassword(credentialsId: 'dockerhub-creds', usernameVariable: 'USER', passwordVariable: 'PASS')]) {
                         sh "echo \$PASS | docker login -u \$USER --password-stdin"
                         sh "docker push ${DOCKER_USER}/my-app:v${env.BUILD_NUMBER}"
@@ -23,17 +18,20 @@ pipeline {
                 }
             }
         }
+        
         stage('Build & Push App 2') {
             steps {
                 script {
                     sh "docker build -t ${DOCKER_USER}/my-app-1:v${env.BUILD_NUMBER} -f docker/Dockerfile.nginx1 docker/"
+                    // Re-use login from previous stage
                     sh "docker push ${DOCKER_USER}/my-app-1:v${env.BUILD_NUMBER}"
                 }
             }
         }
+
         stage('Deploy/Update K8s') {
             steps {
-                // This tells Minikube to restart the pods
+                // Ensure kubectl is in the path
                 sh "kubectl rollout restart deployment/nginx-deployment -n terraform-lab"
                 sh "kubectl rollout restart deployment/nginx-deployment-1 -n terraform-lab"
             }
