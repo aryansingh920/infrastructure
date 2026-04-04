@@ -13,6 +13,9 @@ spec:
       labels:
         app: jenkins
     spec:
+      securityContext:
+        runAsUser: 0
+        fsGroup: 1000 # Required for Jenkins to write to volumes
       containers:
       - name: jenkins
         image: jenkins/jenkins:lts
@@ -21,11 +24,22 @@ spec:
         - containerPort: 50000
         resources:
           requests:
-            memory: "64Mi"
-            cpu: "100m"
+            memory: "512Mi"
+            cpu: "250m"
           limits:
             memory: "1Gi"
             cpu: "500m"
+        volumeMounts:
+        - name: jenkins-home
+          mountPath: /var/jenkins_home
+        - name: docker-sock
+          mountPath: /var/run/docker.sock # This lets Jenkins run 'docker' commands
+      volumes:
+      - name: jenkins-home
+        emptyDir: {} # For practice; use PersistentVolume for real work
+      - name: docker-sock
+        hostPath:
+          path: /var/run/docker.sock # Connects to Minikube's Docker engine
 ---
 apiVersion: v1
 kind: Service

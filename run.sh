@@ -63,3 +63,40 @@ docker build -t my-custom-nginx-1:v1 -f Dockerfile.nginx .
 
 
 kubectl get pods -n terraform-lab -l app=jenkins -w
+
+
+# This gives the Jenkins user permission to use the Docker socket
+kubectl exec -it $(kubectl get pods -n terraform-lab -l app=jenkins -o name) -n terraform-lab -c jenkins -- su -c "chmod 666 /var/run/docker.sock" root
+
+eval $(minikube docker-env) && docker ps
+
+
+# get password
+kubectl exec -it $JENKINS_POD -n terraform-lab -- cat /var/jenkins_home/secrets/initialAdminPassword
+
+
+
+# ---------
+
+
+# 1. Get the NEW pod name
+JENKINS_POD=$(kubectl get pods -n terraform-lab -l app=jenkins -o jsonpath='{.items[0].metadata.name}')
+
+# 2. Check the socket permissions WITHOUT the --user flag
+kubectl exec -it $JENKINS_POD -n terraform-lab -- ls -l /var/run/docker.sock
+
+
+# Update the internal package manager
+kubectl exec -it $JENKINS_POD -n terraform-lab -- apt-get update
+
+# Install the Docker CLI tool
+kubectl exec -it $JENKINS_POD -n terraform-lab -- apt-get install -y docker.io
+
+
+kubectl exec -it $JENKINS_POD -n terraform-lab -- docker --version
+
+
+kubectl exec -it $JENKINS_POD -n terraform-lab -- curl -LO "https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl"
+kubectl exec -it $JENKINS_POD -n terraform-lab -- chmod +x kubectl
+kubectl exec -it $JENKINS_POD -n terraform-lab -- mv kubectl /usr/local/bin/
+
