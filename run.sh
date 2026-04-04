@@ -100,3 +100,9 @@ kubectl exec -it $JENKINS_POD -n terraform-lab -- curl -LO "https://dl.k8s.io/re
 kubectl exec -it $JENKINS_POD -n terraform-lab -- chmod +x kubectl
 kubectl exec -it $JENKINS_POD -n terraform-lab -- mv kubectl /usr/local/bin/
 
+
+
+kubectl create rolebinding jenkins-admin-binding \
+  --clusterrole=admin \
+  --serviceaccount=terraform-lab:default \
+  --namespace=terraform-lab

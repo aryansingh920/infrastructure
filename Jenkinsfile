@@ -31,9 +31,11 @@ pipeline {
 
         stage('Deploy/Update K8s') {
             steps {
-                // Ensure kubectl is in the path
-                sh "kubectl rollout restart deployment/nginx-deployment -n terraform-lab"
-                sh "kubectl rollout restart deployment/nginx-deployment-1 -n terraform-lab"
+                script {
+                    // This ensures kubectl knows it is talking to the internal cluster
+                    sh "kubectl rollout restart deployment/nginx-deployment -n terraform-lab"
+                    sh "kubectl rollout restart deployment/nginx-deployment-1 -n terraform-lab"
+                }
             }
         }
     }
